@@ -1,105 +1,164 @@
-<!DOCTYPE html><html lang="it">
+<!DOCTYPE html>
+<html lang="it">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Gioco 🔺</title>
+
 <style>
-*{box-sizing:border-box;touch-action:manipulation}
-body{margin:0;background:#111;color:#fff;font-family:Arial}
-#game{display:flex;align-items:center;justify-content:center;height:100vh;gap:16px}
-.panel{background:#222;padding:12px;border-radius:10px;width:200px}
-button{width:100%;margin-top:6px;padding:8px;border-radius:6px;border:none;font-size:14px}
-#character{width:160px;height:160px;position:relative;cursor:pointer}
-.shape{position:absolute;inset:0;display:none}
-#triangle{width:0;height:0;margin:auto;border-left:80px solid transparent;border-right:80px solid transparent;border-bottom:160px solid cyan}
-#square{background:cyan}
-#circle{background:cyan;border-radius:50%}
-#pentagon{background:cyan;clip-path:polygon(50% 0%,100% 38%,82% 100%,18% 100%,0% 38%)}
-#hexagon{background:cyan;clip-path:polygon(25% 0%,75% 0%,100% 50%,75% 100%,25% 100%,0% 50%)}
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;justify-content:center;align-items:center}
-.box{background:#222;padding:16px;border-radius:12px;width:280px}
+body{
+  margin:0;
+  background:#111;
+  color:white;
+  font-family:Arial;
+  text-align:center;
+  overflow:hidden;
+}
+
+#top{
+  margin-top:10px;
+}
+
+button{
+  padding:8px 12px;
+  margin:5px;
+  border:none;
+  border-radius:8px;
+  background:#333;
+  color:white;
+  font-size:14px;
+}
+
+button:hover{ background:#555; }
+
+#game{
+  margin:20px auto;
+  width:260px;
+  height:260px;
+  background:#222;
+  border-radius:16px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+svg{ overflow:visible; }
+
+.menu{
+  position:fixed;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  background:#222;
+  padding:15px;
+  border-radius:12px;
+  display:none;
+  width:260px;
+}
+
+.menu h3{
+  margin-top:0;
+}
 </style>
 </head>
+
 <body>
+
+<div id="top">
+  <div>Punteggio: <span id="score">0</span></div>
+  <div>Rinascite: <span id="rebirths">0</span></div>
+</div>
+
 <div id="game">
-  <div class="panel">
-    <h3>📊 Stato</h3>
-    ⭐ Punteggio: <span id="score">0</span><br>
-    💰 Soldi: <span id="money">0</span><br>
-    🔁 Rinascite: <span id="rebirths">0</span><br>
-    🎯 Prossima rinascita: <span id="target">50</span>
-    <button onclick="openShop()">🛒 Shop</button>
-    <button onclick="openCustomize()">🎨 Customize</button>
-    <button onclick="openSpecial()">⭐ Menu speciale</button>
-  </div>  <div id="character">
-    <div id="triangle" class="shape"></div>
-    <div id="square" class="shape"></div>
-    <div id="circle" class="shape"></div>
-    <div id="pentagon" class="shape"></div>
-    <div id="hexagon" class="shape"></div>
-  </div>
-</div><!-- SHOP --><div id="shop" class="overlay">
-  <div class="box">
-    <h3>🛒 Shop</h3>
-    <button onclick="buyClick()">+1 punto per click (10💰)</button>
-    <button onclick="closeShop()">Chiudi</button>
-  </div>
-</div><!-- CUSTOMIZE --><div id="customize" class="overlay">
-  <div class="box">
-    <h3>🎨 Customize</h3>
-    <button onclick="setShape('triangle')">Triangolo</button>
-    <button onclick="setShape('square')">Quadrato</button>
-    <button onclick="setShape('circle')">Cerchio</button>
-    <button onclick="closeCustomize()">Chiudi</button>
-  </div>
-</div><!-- MENU SPECIALE --><div id="special" class="overlay">
-  <div class="box">
-    <h3>⭐ Menu speciale</h3>
-    <div id="locked">🔒 Serve 5 rinascite</div>
-    <div id="unlocked" style="display:none">
-      <button onclick="setShape('pentagon')">Pentagono</button>
-      <button onclick="setShape('hexagon')">Esagono</button>
-      <button onclick="setBg('#0d47a1')">Sfondo blu</button>
-    </div>
-    <button onclick="closeSpecial()">Chiudi</button>
-  </div>
-</div><script>
-let score=0,money=0,rebirths=0,clickPower=1,target=50;
-setShape('triangle');
+<svg width="200" height="200" viewBox="0 0 200 200" id="shape" onclick="clickTriangle()">
 
-document.getElementById('character').addEventListener('pointerdown',e=>{
- e.preventDefault();
- score+=clickPower;
- money+=1;
- if(score>=target && rebirths<1000){
-   rebirths++;
-   score=0;
-   target=Math.min(target*2,1000);
- }
- update();
-});
+  <!-- TRIANGOLO -->
+  <polygon id="triangle" points="100,30 30,170 170,170" fill="#00ffd5"/>
 
-function update(){
- scoreEl.textContent=score;
- moneyEl.textContent=money;
- rebirthsEl.textContent=rebirths;
- targetEl.textContent=target;
+  <!-- VESTITI -->
+  <rect id="shirt" x="70" y="110" width="60" height="40" fill="#ff5555" rx="8" display="none"/>
+  <rect id="vest" x="70" y="105" width="60" height="50" fill="#4444ff" rx="8" display="none"/>
+
+  <!-- OCCHIALI -->
+  <rect id="glasses1" x="70" y="80" width="20" height="10" fill="black" display="none"/>
+  <rect id="glasses2" x="110" y="80" width="20" height="10" fill="black" display="none"/>
+  <line id="bridge" x1="90" y1="85" x2="110" y2="85" stroke="black" stroke-width="3" display="none"/>
+
+  <!-- CAPPELLI -->
+  <rect id="cap" x="60" y="40" width="80" height="20" fill="#ffaa00" display="none"/>
+  <rect id="topHat" x="75" y="10" width="50" height="40" fill="black" display="none"/>
+
+</svg>
+</div>
+
+<button onclick="openCustomize()">🎨 Customize</button>
+
+<!-- MENU CUSTOMIZE -->
+<div class="menu" id="customizeMenu">
+<h3>🎨 Customize</h3>
+
+<b>Vestiti</b><br>
+<button onclick="setClothes('none')">Nessuno</button>
+<button onclick="setClothes('shirt')">Maglietta</button>
+<button onclick="setClothes('vest')">Gilet</button>
+
+<br><br><b>Cappelli</b><br>
+<button onclick="setHat('none')">Nessuno</button>
+<button onclick="setHat('cap')">Cappellino</button>
+<button onclick="setHat('top')">Cappello alto</button>
+
+<br><br><b>Occhiali</b><br>
+<button onclick="setGlasses('none')">Nessuno</button>
+<button onclick="setGlasses('yes')">Occhiali</button>
+
+<br><br>
+<button onclick="closeCustomize()">Chiudi</button>
+</div>
+
+<script>
+let score=0;
+let rebirths=0;
+
+function clickTriangle(){
+  score++;
+  document.getElementById("score").innerText=score;
 }
-const scoreEl=document.getElementById('score');
-const moneyEl=document.getElementById('money');
-const rebirthsEl=document.getElementById('rebirths');
-const targetEl=document.getElementById('target');
 
-function buyClick(){if(money>=10){money-=10;clickPower++;update();}}
+function openCustomize(){
+  document.getElementById("customizeMenu").style.display="block";
+}
+function closeCustomize(){
+  document.getElementById("customizeMenu").style.display="none";
+}
 
-function setShape(id){document.querySelectorAll('.shape').forEach(s=>s.style.display='none');document.getElementById(id).style.display='block'}
-function setBg(c){document.body.style.background=c}
+// VESTITI
+function setClothes(type){
+  shirt.style.display="none";
+  vest.style.display="none";
+  if(type==="shirt") shirt.style.display="block";
+  if(type==="vest") vest.style.display="block";
+}
 
-function openShop(){shop.style.display='flex'}
-function closeShop(){shop.style.display='none'}
-function openCustomize(){customize.style.display='flex'}
-function closeCustomize(){customize.style.display='none'}
-function openSpecial(){special.style.display='flex';if(rebirths>=5){locked.style.display='none';unlocked.style.display='block'}}
-function closeSpecial(){special.style.display='none'}
-</script></body>
+// CAPPELLI
+function setHat(type){
+  cap.style.display="none";
+  topHat.style.display="none";
+  if(type==="cap") cap.style.display="block";
+  if(type==="top") topHat.style.display="block";
+}
+
+// OCCHIALI
+function setGlasses(type){
+  glasses1.style.display="none";
+  glasses2.style.display="none";
+  bridge.style.display="none";
+  if(type==="yes"){
+    glasses1.style.display="block";
+    glasses2.style.display="block";
+    bridge.style.display="block";
+  }
+}
+</script>
+
+</body>
 </html>
