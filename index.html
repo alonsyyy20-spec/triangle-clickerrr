@@ -1,105 +1,216 @@
-<!DOCTYPE html><html lang="it">
+<!DOCTYPE html>
+<html lang="it">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta charset="UTF-8">
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Gioco 🔺</title>
+
 <style>
-*{box-sizing:border-box;touch-action:manipulation}
-body{margin:0;background:#111;color:#fff;font-family:Arial}
-#game{display:flex;align-items:center;justify-content:center;height:100vh;gap:16px}
-.panel{background:#222;padding:12px;border-radius:10px;width:200px}
-button{width:100%;margin-top:6px;padding:8px;border-radius:6px;border:none;font-size:14px}
-#character{width:160px;height:160px;position:relative;cursor:pointer}
-.shape{position:absolute;inset:0;display:none}
-#triangle{width:0;height:0;margin:auto;border-left:80px solid transparent;border-right:80px solid transparent;border-bottom:160px solid cyan}
-#square{background:cyan}
-#circle{background:cyan;border-radius:50%}
-#pentagon{background:cyan;clip-path:polygon(50% 0%,100% 38%,82% 100%,18% 100%,0% 38%)}
-#hexagon{background:cyan;clip-path:polygon(25% 0%,75% 0%,100% 50%,75% 100%,25% 100%,0% 50%)}
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;justify-content:center;align-items:center}
-.box{background:#222;padding:16px;border-radius:12px;width:280px}
+* { box-sizing: border-box; touch-action: manipulation; }
+
+body {
+  margin: 0;
+  background: #111;
+  color: white;
+  font-family: Arial;
+}
+
+#game {
+  display: flex;
+  height: 100vh;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+/* ===== PANNELLI ===== */
+.panel {
+  background: #222;
+  padding: 12px;
+  border-radius: 10px;
+  width: 190px;
+}
+
+button {
+  width: 100%;
+  padding: 8px;
+  margin-top: 6px;
+  border-radius: 6px;
+  border: none;
+  font-size: 14px;
+}
+
+/* ===== PERSONAGGIO ===== */
+#character {
+  position: relative;
+  width: 160px;
+  height: 160px;
+  cursor: pointer;
+}
+
+/* FORME */
+.shape {
+  position: absolute;
+  inset: 0;
+  display: none;
+}
+
+#triangle {
+  width: 0;
+  height: 0;
+  margin: auto;
+  border-left: 80px solid transparent;
+  border-right: 80px solid transparent;
+  border-bottom: 160px solid cyan;
+}
+
+#square { background: cyan; }
+#circle { background: cyan; border-radius: 50%; }
+
+#pentagon {
+  background: cyan;
+  clip-path: polygon(50% 0%,100% 38%,82% 100%,18% 100%,0% 38%);
+}
+#hexagon {
+  background: cyan;
+  clip-path: polygon(25% 0%,75% 0%,100% 50%,75% 100%,25% 100%,0% 50%);
+}
+
+/* ===== MENU ===== */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.7);
+  display: none;
+  justify-content: center;
+  align-items: center;
+}
+
+.box {
+  background: #222;
+  padding: 16px;
+  border-radius: 12px;
+  width: 260px;
+}
 </style>
 </head>
+
 <body>
+
 <div id="game">
+
+  <!-- SHOP BASE -->
   <div class="panel">
-    <h3>📊 Stato</h3>
-    ⭐ Punteggio: <span id="score">0</span><br>
+    <h3>🛒 Shop</h3>
     💰 Soldi: <span id="money">0</span><br>
-    🔁 Rinascite: <span id="rebirths">0</span><br>
-    🎯 Prossima rinascita: <span id="target">50</span>
-    <button onclick="openShop()">🛒 Shop</button>
+    🔁 Rinascite: <span id="rebirths">0</span>
     <button onclick="openCustomize()">🎨 Customize</button>
-    <button onclick="openSpecial()">⭐ Menu speciale</button>
-  </div>  <div id="character">
+    <button onclick="openSpecialMenu()">⭐ Menu Speciale</button>
+  </div>
+
+  <!-- PERSONAGGIO -->
+  <div id="character">
     <div id="triangle" class="shape"></div>
     <div id="square" class="shape"></div>
     <div id="circle" class="shape"></div>
     <div id="pentagon" class="shape"></div>
     <div id="hexagon" class="shape"></div>
   </div>
-</div><!-- SHOP --><div id="shop" class="overlay">
-  <div class="box">
-    <h3>🛒 Shop</h3>
-    <button onclick="buyClick()">+1 punto per click (10💰)</button>
-    <button onclick="closeShop()">Chiudi</button>
-  </div>
-</div><!-- CUSTOMIZE --><div id="customize" class="overlay">
+
+</div>
+
+<!-- CUSTOMIZE -->
+<div id="customize" class="overlay">
   <div class="box">
     <h3>🎨 Customize</h3>
-    <button onclick="setShape('triangle')">Triangolo</button>
-    <button onclick="setShape('square')">Quadrato</button>
-    <button onclick="setShape('circle')">Cerchio</button>
+    <p>(resta tutto com’è, gratis)</p>
     <button onclick="closeCustomize()">Chiudi</button>
   </div>
-</div><!-- MENU SPECIALE --><div id="special" class="overlay">
+</div>
+
+<!-- MENU SPECIALE -->
+<div id="specialMenu" class="overlay">
   <div class="box">
-    <h3>⭐ Menu speciale</h3>
-    <div id="locked">🔒 Serve 5 rinascite</div>
-    <div id="unlocked" style="display:none">
+    <h3>⭐ Menu Speciale</h3>
+
+    <div id="lockedText">
+      🔒 Sblocca con 5 rinascite
+    </div>
+
+    <div id="specialContent" style="display:none">
+      <h4>Forma</h4>
+      <button onclick="setShape('triangle')">Triangolo</button>
+      <button onclick="setShape('square')">Quadrato</button>
+      <button onclick="setShape('circle')">Cerchio</button>
       <button onclick="setShape('pentagon')">Pentagono</button>
       <button onclick="setShape('hexagon')">Esagono</button>
-      <button onclick="setBg('#0d47a1')">Sfondo blu</button>
-    </div>
-    <button onclick="closeSpecial()">Chiudi</button>
-  </div>
-</div><script>
-let score=0,money=0,rebirths=0,clickPower=1,target=50;
-setShape('triangle');
 
-document.getElementById('character').addEventListener('pointerdown',e=>{
- e.preventDefault();
- score+=clickPower;
- money+=1;
- if(score>=target && rebirths<1000){
-   rebirths++;
-   score=0;
-   target=Math.min(target*2,1000);
- }
- update();
+      <h4>Sfondo</h4>
+      <button onclick="setBg('#111')">Scuro</button>
+      <button onclick="setBg('#0d47a1')">Blu</button>
+      <button onclick="setBg('#4a148c')">Viola</button>
+      <button onclick="setBg('#1b5e20')">Verde</button>
+    </div>
+
+    <button onclick="closeSpecialMenu()">Chiudi</button>
+  </div>
+</div>
+
+<script>
+let money = 0;
+let rebirths = 0;
+
+/* FORMA BASE */
+setShape("triangle");
+
+/* CLICK SUL PERSONAGGIO */
+document.getElementById("character").addEventListener("pointerdown", e => {
+  e.preventDefault();
+  money++;
+  if (money % 50 === 0) rebirths++;
+  updateUI();
 });
 
-function update(){
- scoreEl.textContent=score;
- moneyEl.textContent=money;
- rebirthsEl.textContent=rebirths;
- targetEl.textContent=target;
+/* UI */
+function updateUI() {
+  document.getElementById("money").textContent = money;
+  document.getElementById("rebirths").textContent = rebirths;
 }
-const scoreEl=document.getElementById('score');
-const moneyEl=document.getElementById('money');
-const rebirthsEl=document.getElementById('rebirths');
-const targetEl=document.getElementById('target');
 
-function buyClick(){if(money>=10){money-=10;clickPower++;update();}}
+/* FORME */
+function setShape(id) {
+  document.querySelectorAll(".shape").forEach(s => s.style.display = "none");
+  document.getElementById(id).style.display = "block";
+}
 
-function setShape(id){document.querySelectorAll('.shape').forEach(s=>s.style.display='none');document.getElementById(id).style.display='block'}
-function setBg(c){document.body.style.background=c}
+/* SFONDO */
+function setBg(color) {
+  document.body.style.background = color;
+}
 
-function openShop(){shop.style.display='flex'}
-function closeShop(){shop.style.display='none'}
-function openCustomize(){customize.style.display='flex'}
-function closeCustomize(){customize.style.display='none'}
-function openSpecial(){special.style.display='flex';if(rebirths>=5){locked.style.display='none';unlocked.style.display='block'}}
-function closeSpecial(){special.style.display='none'}
-</script></body>
+/* CUSTOMIZE */
+function openCustomize() {
+  document.getElementById("customize").style.display = "flex";
+}
+function closeCustomize() {
+  document.getElementById("customize").style.display = "none";
+}
+
+/* MENU SPECIALE */
+function openSpecialMenu() {
+  document.getElementById("specialMenu").style.display = "flex";
+  if (rebirths >= 5) {
+    document.getElementById("lockedText").style.display = "none";
+    document.getElementById("specialContent").style.display = "block";
+  }
+}
+function closeSpecialMenu() {
+  document.getElementById("specialMenu").style.display = "none";
+}
+
+updateUI();
+</script>
+
+</body>
 </html>
