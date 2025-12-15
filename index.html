@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 
-<!-- BLOCCA ZOOM SU IPAD / MOBILE -->
+<!-- BLOCCA ZOOM SU MOBILE / IPAD -->
 <meta name="viewport"
 content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
@@ -35,7 +35,11 @@ html, body {
   background: #222;
   padding: 15px;
   border-radius: 10px;
-  width: 170px;
+  width: 180px;
+}
+
+#shop h3 {
+  margin-top: 0;
 }
 
 #shop button {
@@ -43,6 +47,8 @@ html, body {
   margin-top: 10px;
   padding: 8px;
   font-size: 14px;
+  border-radius: 6px;
+  border: none;
 }
 
 /* TRIANGOLO */
@@ -78,8 +84,8 @@ html, body {
     <h3>🛒 Shop</h3>
     <p>💰 Soldi: <span id="money">0</span></p>
 
-    <button onclick="buyCoins()">+1 moneta per click (10💰)</button>
-    <button onclick="buyPoints()">+1 punto per click (20💰)</button>
+    <button onclick="buyCoins()">+1 moneta / click (10💰)</button>
+    <button onclick="buyPoints()">+1 punto / click (20💰)</button>
   </div>
 
   <!-- TRIANGOLO -->
@@ -91,14 +97,18 @@ html, body {
 <div id="info">
   Punti: <span id="points">0</span><br>
   Rinascite: <span id="rebirths">0</span><br>
-  Velocità: <span id="speed">1</span>
+  Velocità: <span id="speed">1.0</span><br>
+  Prossima rinascita: <span id="goal">50</span>
 </div>
 
 <script>
+/* STATO GIOCO */
 let size = 120;
 let points = 0;
 let rebirths = 0;
 let speed = 1;
+
+let rebirthGoal = 50;
 
 let money = 0;
 let coinsPerClick = 1;
@@ -108,12 +118,15 @@ const triangle = document.getElementById("triangle");
 
 const colors = ["cyan", "yellow", "lime", "red", "orange", "pink", "violet"];
 
+/* TRIANGOLO */
 function updateTriangle() {
   triangle.style.borderLeft = (size / 2) + "px solid transparent";
   triangle.style.borderRight = (size / 2) + "px solid transparent";
-  triangle.style.borderBottom = size + "px solid " + colors[Math.floor(Math.random() * colors.length)];
+  triangle.style.borderBottom =
+    size + "px solid " + colors[Math.floor(Math.random() * colors.length)];
 }
 
+/* CLICK / TOUCH */
 triangle.addEventListener("touchstart", clickTriangle);
 triangle.addEventListener("click", clickTriangle);
 
@@ -127,20 +140,24 @@ function clickTriangle(e) {
 
   updateTriangle();
 
-  if (points >= 50) {
+  if (points >= rebirthGoal) {
     rebirth();
   }
 
   updateUI();
 }
 
+/* RINASCITA (PIÙ DIFFICILE OGNI VOLTA) */
 function rebirth() {
   points = 0;
   size = 120;
   rebirths++;
+
   speed += 0.5;
+  rebirthGoal *= 2; // DIFFICOLTÀ CHE AUMENTA
 }
 
+/* SHOP */
 function buyCoins() {
   if (money >= 10) {
     money -= 10;
@@ -157,13 +174,16 @@ function buyPoints() {
   }
 }
 
+/* UI */
 function updateUI() {
   document.getElementById("points").textContent = points;
   document.getElementById("rebirths").textContent = rebirths;
   document.getElementById("speed").textContent = speed.toFixed(1);
   document.getElementById("money").textContent = money;
+  document.getElementById("goal").textContent = rebirthGoal;
 }
 
+/* START */
 updateTriangle();
 updateUI();
 </script>
