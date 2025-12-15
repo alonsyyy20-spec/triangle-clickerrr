@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 
+<!-- BLOCCA ZOOM SU MOBILE / IPAD -->
 <meta name="viewport"
 content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
@@ -53,6 +54,8 @@ html, body {
   border-left: 60px solid transparent;
   border-right: 60px solid transparent;
   border-bottom: 120px solid cyan;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 /* FACCIA */
@@ -117,15 +120,17 @@ html, body {
 </div>
 
 <script>
-/* STATO */
+/* ===== STATO GIOCO ===== */
 let size = 120;
 let points = 0;
 let rebirths = 0;
 let speed = 1;
+
 let rebirthGoal = 50;
+const maxRebirthGoal = 1000;
 
 let money = 0;
-let maxMoney = 500;
+const maxMoney = 500;
 
 let coinsPerClick = 1;
 let pointsPerClick = 1;
@@ -138,7 +143,7 @@ const face = document.getElementById("face");
 
 const colors = ["cyan", "yellow", "lime", "red", "orange", "pink", "violet"];
 
-/* TRIANGOLO */
+/* ===== TRIANGOLO ===== */
 function updateTriangle() {
   triangle.style.borderLeft = (size / 2) + "px solid transparent";
   triangle.style.borderRight = (size / 2) + "px solid transparent";
@@ -146,7 +151,7 @@ function updateTriangle() {
     size + "px solid " + colors[Math.floor(Math.random() * colors.length)];
 }
 
-/* CLICK */
+/* ===== CLICK / TOUCH ===== */
 triangle.addEventListener("touchstart", clickTriangle);
 triangle.addEventListener("click", clickTriangle);
 
@@ -163,21 +168,28 @@ function clickTriangle(e) {
   size += speed;
   updateTriangle();
 
-  if (points >= rebirthGoal) rebirth();
+  if (points >= rebirthGoal) {
+    rebirth();
+  }
 
   updateUI();
 }
 
-/* RINASCITA */
+/* ===== RINASCITA ===== */
 function rebirth() {
   points = 0;
   size = 120;
   rebirths++;
+
   speed += 0.5;
+
   rebirthGoal *= 2;
+  if (rebirthGoal > maxRebirthGoal) {
+    rebirthGoal = maxRebirthGoal;
+  }
 }
 
-/* SHOP */
+/* ===== SHOP ===== */
 function buyCoins() {
   if (money >= 10) {
     money -= 10;
@@ -199,14 +211,14 @@ function unlockUpgrades() {
 }
 
 function buyFace() {
-  if (money >= 100 && upgradesUnlocked) {
+  if (money >= 100 && upgradesUnlocked && !faceUnlocked) {
     money -= 100;
     faceUnlocked = true;
     face.style.display = "block";
   }
 }
 
-/* UI */
+/* ===== UI ===== */
 function updateUI() {
   document.getElementById("points").textContent = points;
   document.getElementById("rebirths").textContent = rebirths;
@@ -218,7 +230,7 @@ function updateUI() {
   document.getElementById("faceBtn").disabled = !upgradesUnlocked;
 }
 
-/* START */
+/* ===== START ===== */
 updateTriangle();
 updateUI();
 </script>
