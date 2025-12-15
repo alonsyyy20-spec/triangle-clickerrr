@@ -1,7 +1,203 @@
 <!DOCTYPE html>
-<html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Gioco del Triangolo</title>
+    <style>
+        body {
+            background: #111;
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        canvas {
+            background: #222;
+            margin-top: 20px;
+            cursor: pointer;
+        }
+    </style>
+</head>
 <body>
-<h1>🎮 Il mio primo gioco online</h1>
-<p>Funziona!</p>
+
+<h1>🔺 Gioco del Triangolo</h1>
+<p>Punteggio: <span id="score">0</span></p>
+<p>Rinascite: <span id="rebirths">0</span></p>
+<p>Velocità: <span id="speed">1</span>x</p>
+
+<canvas id="gameCanvas" width="400" height="400"></canvas>
+
+<script>
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+
+    let size = 40;
+    let score = 0;
+    let rebirths = 0;
+
+    let speed = 1;          // velocità base
+    let autoGrow = 0.02;    // crescita automatica
+
+    function drawTriangle() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        ctx.fillStyle = "cyan";
+        ctx.beginPath();
+        ctx.moveTo(200, 200 - size);
+        ctx.lineTo(200 - size, 200 + size);
+        ctx.lineTo(200 + size, 200 + size);
+        ctx.closePath();
+        ctx.fill();
+    }
+
+    function isClickInsideTriangle(x, y) {
+        return (
+            x > 200 - size &&
+            x < 200 + size &&
+            y > 200 - size &&
+            y < 200 + size
+        );
+    }
+
+    function rebirth() {
+        rebirths++;
+        size = 40;
+        speed += 0.5;
+        autoGrow += 0.01;
+
+        document.getElementById("rebirths").textContent = rebirths;
+        document.getElementById("speed").textContent = speed.toFixed(1);
+    }
+
+    canvas.addEventListener("click", (e) => {
+        const rect = canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        if (isClickInsideTriangle(x, y)) {
+            score++;
+            size += 1 * speed;
+
+            if (score % 100 === 0) {
+                rebirth();
+            }
+
+            document.getElementById("score").textContent = score;
+            drawTriangle();
+        }
+    });
+
+    // crescita automatica (più vai avanti, più è veloce)
+    function gameLoop() {
+        size += autoGrow * speed;
+        drawTriangle();
+        requestAnimationFrame(gameLoop);
+    }
+
+    drawTriangle();
+    gameLoop();
+</script>
+
+</body>
+</html><!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Gioco del Triangolo</title>
+    <style>
+        body {
+            background: #111;
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        canvas {
+            background: #222;
+            margin-top: 20px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<h1>🔺 Gioco del Triangolo</h1>
+<p>Punteggio: <span id="score">0</span></p>
+<p>Rinascite: <span id="rebirths">0</span></p>
+<p>Velocità: <span id="speed">1</span>x</p>
+
+<canvas id="gameCanvas" width="400" height="400"></canvas>
+
+<script>
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+
+    let size = 40;
+    let score = 0;
+    let rebirths = 0;
+
+    let speed = 1;          // velocità base
+    let autoGrow = 0.02;    // crescita automatica
+
+    function drawTriangle() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        ctx.fillStyle = "cyan";
+        ctx.beginPath();
+        ctx.moveTo(200, 200 - size);
+        ctx.lineTo(200 - size, 200 + size);
+        ctx.lineTo(200 + size, 200 + size);
+        ctx.closePath();
+        ctx.fill();
+    }
+
+    function isClickInsideTriangle(x, y) {
+        return (
+            x > 200 - size &&
+            x < 200 + size &&
+            y > 200 - size &&
+            y < 200 + size
+        );
+    }
+
+    function rebirth() {
+        rebirths++;
+        size = 40;
+        speed += 0.5;
+        autoGrow += 0.01;
+
+        document.getElementById("rebirths").textContent = rebirths;
+        document.getElementById("speed").textContent = speed.toFixed(1);
+    }
+
+    canvas.addEventListener("click", (e) => {
+        const rect = canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        if (isClickInsideTriangle(x, y)) {
+            score++;
+            size += 1 * speed;
+
+            if (score % 100 === 0) {
+                rebirth();
+            }
+
+            document.getElementById("score").textContent = score;
+            drawTriangle();
+        }
+    });
+
+    // crescita automatica (più vai avanti, più è veloce)
+    function gameLoop() {
+        size += autoGrow * speed;
+        drawTriangle();
+        requestAnimationFrame(gameLoop);
+    }
+
+    drawTriangle();
+    gameLoop();
+</script>
+
 </body>
 </html>
