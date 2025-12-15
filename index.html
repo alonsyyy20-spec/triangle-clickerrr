@@ -2,146 +2,82 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
+
+<!-- BLOCCA ZOOM SU MOBILE / IPAD -->
 <meta name="viewport"
 content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
 <title>Gioco 🔺</title>
 
 <style>
-* { touch-action: manipulation; box-sizing: border-box; }
-
-body {
+html, body {
   margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
   background: #111;
   color: white;
-  font-family: Arial;
+  font-family: Arial, sans-serif;
+  touch-action: manipulation;
 }
 
 #game {
   display: flex;
-  height: 100vh;
   align-items: center;
   justify-content: center;
-  gap: 20px;
+  height: 100%;
+  gap: 30px;
 }
 
-/* ===== PANNELLI ===== */
-.panel {
+/* SHOP */
+#shop {
   background: #222;
-  padding: 12px;
+  padding: 15px;
   border-radius: 10px;
-  width: 180px;
+  width: 200px;
 }
 
-button {
+#shop button {
   width: 100%;
+  margin-top: 8px;
   padding: 8px;
-  margin-top: 6px;
   border-radius: 6px;
   border: none;
-  font-size: 14px;
 }
 
-/* ===== TRIANGOLO ===== */
+/* TRIANGOLO */
 #triangle {
   position: relative;
   width: 0;
   height: 0;
-  border-left: 80px solid transparent;
-  border-right: 80px solid transparent;
-  border-bottom: 160px solid cyan;
+  border-left: 60px solid transparent;
+  border-right: 60px solid transparent;
+  border-bottom: 120px solid cyan;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
-/* ===== DISEGNI ===== */
-
-/* Vestiti */
-.clothes {
-  position: absolute;
-  top: 80px;
-  left: -40px;
-  width: 80px;
-  height: 50px;
-  display: none;
-}
-#gilet { background: #444; }
-#shirt { background: #1976d2; }
-#jacket { background: #6a1b9a; }
-
-/* Cappelli */
-.hat {
-  position: absolute;
-  top: -35px;
-  left: -35px;
-  width: 70px;
-  height: 20px;
-  display: none;
-}
-#hat1 { background: #333; }
-#hat2 { background: #795548; }
-#hat3 { background: #263238; }
-
-/* Occhiali */
-.glasses {
-  position: absolute;
-  top: 55px;
-  left: -35px;
-  width: 70px;
-  height: 20px;
-  display: none;
-}
-.glasses::before,
-.glasses::after {
-  content: "";
-  position: absolute;
-  width: 18px;
-  height: 18px;
-  border: 2px solid black;
-  border-radius: 50%;
-  top: 0;
-}
-.glasses::before { left: 0; }
-.glasses::after { right: 0; }
-
-/* Faccia */
-.eye {
+/* FACCIA */
+#face {
   position: absolute;
   top: 45px;
-  width: 6px;
-  height: 6px;
-  background: black;
-  border-radius: 50%;
-}
-#eyeL { left: -15px; }
-#eyeR { left: 9px; }
-
-#mouth {
-  position: absolute;
-  top: 60px;
-  left: -8px;
-  width: 16px;
-  height: 8px;
-  border-bottom: 2px solid black;
+  left: -20px;
+  font-size: 28px;
   display: none;
+  pointer-events: none;
 }
 
-/* ===== CUSTOMIZE MENU ===== */
-#customize {
+/* INFO */
+#info {
   position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.7);
-  display: none;
-  justify-content: center;
-  align-items: center;
-}
-
-#customizeBox {
+  top: 10px;
+  right: 10px;
   background: #222;
-  padding: 16px;
-  border-radius: 12px;
-  width: 260px;
+  padding: 10px;
+  border-radius: 10px;
+  font-size: 14px;
 }
-
-h4 { margin-bottom: 4px; margin-top: 10px; }
 </style>
 </head>
 
@@ -150,127 +86,152 @@ h4 { margin-bottom: 4px; margin-top: 10px; }
 <div id="game">
 
   <!-- SHOP -->
-  <div class="panel">
-    <h3>🎮 Gioco</h3>
-    💰 <span id="money">0</span><br>
-    Punti: <span id="points">0</span><br>
-    Rinascite: <span id="rebirths">0</span>
-    <button onclick="openCustomize()">🎨 Customize</button>
+  <div id="shop">
+    <h3>🛒 Shop</h3>
+    <p>💰 Soldi: <span id="money">0 / 500</span></p>
+
+    <button onclick="buyCoins()">+1 moneta / click (10💰)</button>
+    <button onclick="buyPoints()">+1 punto / click (20💰)</button>
+
+    <hr>
+
+    <button id="unlockBtn" onclick="unlockUpgrades()" disabled>
+      🔒 Sblocca upgrade (10 rinascite)
+    </button>
+
+    <button id="faceBtn" onclick="buyFace()" disabled>
+      😀 Metti faccia (100💰)
+    </button>
   </div>
 
   <!-- TRIANGOLO -->
   <div id="triangle">
-    <!-- Vestiti -->
-    <div id="gilet" class="clothes"></div>
-    <div id="shirt" class="clothes"></div>
-    <div id="jacket" class="clothes"></div>
-
-    <!-- Cappelli -->
-    <div id="hat1" class="hat"></div>
-    <div id="hat2" class="hat"></div>
-    <div id="hat3" class="hat"></div>
-
-    <!-- Occhiali -->
-    <div id="gl1" class="glasses"></div>
-
-    <!-- Faccia -->
-    <div id="eyeL" class="eye"></div>
-    <div id="eyeR" class="eye"></div>
-    <div id="mouth"></div>
+    <div id="face">😀</div>
   </div>
 
 </div>
 
-<!-- CUSTOMIZE -->
-<div id="customize">
-  <div id="customizeBox">
-
-    <h3>🎨 Customize</h3>
-
-    <h4>Vestiti</h4>
-    <button onclick="setClothes('gilet')">Gilet</button>
-    <button onclick="setClothes('shirt')">Maglietta</button>
-    <button onclick="setClothes('jacket')">Camicia</button>
-
-    <h4>Cappelli</h4>
-    <button onclick="setHat('hat1')">Cappello</button>
-    <button onclick="setHat('hat2')">Cappello ragazzo</button>
-    <button onclick="setHat('hat3')">Altro</button>
-
-    <h4>Occhiali</h4>
-    <button onclick="toggleGlasses()">Occhiali</button>
-
-    <h4>Faccia</h4>
-    <button onclick="setMouth()">Bocca</button>
-
-    <button onclick="closeCustomize()">Chiudi</button>
-  </div>
+<!-- INFO -->
+<div id="info">
+  Punti: <span id="points">0</span><br>
+  Rinascite: <span id="rebirths">0</span><br>
+  Velocità: <span id="speed">1.0</span><br>
+  Prossima rinascita: <span id="goal">50</span>
 </div>
 
 <script>
+/* ===== STATO GIOCO ===== */
+let size = 120;
 let points = 0;
-let money = 0;
 let rebirths = 0;
+let speed = 1;
+
 let rebirthGoal = 50;
-const MAX_GOAL = 1000;
+const maxRebirthGoal = 1000;
 
-/* CLICK */
-document.getElementById("triangle").addEventListener("pointerdown", e => {
-  e.preventDefault();
-  points++;
-  money++;
-  if (points >= rebirthGoal) doRebirth();
-  updateUI();
-});
+let money = 0;
+const maxMoney = 500;
 
-/* RINASCITA */
-function doRebirth() {
-  points = 0;
-  rebirths++;
-  rebirthGoal *= 2;
-  if (rebirthGoal > MAX_GOAL) rebirthGoal = MAX_GOAL;
+let coinsPerClick = 1;
+let pointsPerClick = 1;
+
+let upgradesUnlocked = false;
+let faceUnlocked = false;
+
+const triangle = document.getElementById("triangle");
+const face = document.getElementById("face");
+
+const colors = ["cyan", "yellow", "lime", "red", "orange", "pink", "violet"];
+
+/* ===== TRIANGOLO ===== */
+function updateTriangle() {
+  triangle.style.borderLeft = (size / 2) + "px solid transparent";
+  triangle.style.borderRight = (size / 2) + "px solid transparent";
+  triangle.style.borderBottom =
+    size + "px solid " + colors[Math.floor(Math.random() * colors.length)];
 }
 
-/* UI */
+/* ===== CLICK / TOUCH ===== */
+triangle.addEventListener("touchstart", clickTriangle);
+triangle.addEventListener("click", clickTriangle);
+
+function clickTriangle(e) {
+  e.preventDefault();
+
+  points += pointsPerClick;
+
+  if (money < maxMoney) {
+    money += coinsPerClick;
+    if (money > maxMoney) money = maxMoney;
+  }
+
+  size += speed;
+  updateTriangle();
+
+  if (points >= rebirthGoal) {
+    rebirth();
+  }
+
+  updateUI();
+}
+
+/* ===== RINASCITA ===== */
+function rebirth() {
+  points = 0;
+  size = 120;
+  rebirths++;
+
+  speed += 0.5;
+
+  rebirthGoal *= 2;
+  if (rebirthGoal > maxRebirthGoal) {
+    rebirthGoal = maxRebirthGoal;
+  }
+}
+
+/* ===== SHOP ===== */
+function buyCoins() {
+  if (money >= 10) {
+    money -= 10;
+    coinsPerClick++;
+  }
+}
+
+function buyPoints() {
+  if (money >= 20) {
+    money -= 20;
+    pointsPerClick++;
+  }
+}
+
+function unlockUpgrades() {
+  if (rebirths >= 10) {
+    upgradesUnlocked = true;
+  }
+}
+
+function buyFace() {
+  if (money >= 100 && upgradesUnlocked && !faceUnlocked) {
+    money -= 100;
+    faceUnlocked = true;
+    face.style.display = "block";
+  }
+}
+
+/* ===== UI ===== */
 function updateUI() {
   document.getElementById("points").textContent = points;
-  document.getElementById("money").textContent = money;
   document.getElementById("rebirths").textContent = rebirths;
+  document.getElementById("speed").textContent = speed.toFixed(1);
+  document.getElementById("goal").textContent = rebirthGoal;
+  document.getElementById("money").textContent = money + " / " + maxMoney;
+
+  document.getElementById("unlockBtn").disabled = rebirths < 10;
+  document.getElementById("faceBtn").disabled = !upgradesUnlocked;
 }
 
-/* CUSTOMIZE */
-function openCustomize() {
-  document.getElementById("customize").style.display = "flex";
-}
-function closeCustomize() {
-  document.getElementById("customize").style.display = "none";
-}
-
-/* SELEZIONI */
-function hideAll(cls) {
-  document.querySelectorAll(cls).forEach(e => e.style.display = "none");
-}
-
-function setClothes(id) {
-  hideAll(".clothes");
-  document.getElementById(id).style.display = "block";
-}
-
-function setHat(id) {
-  hideAll(".hat");
-  document.getElementById(id).style.display = "block";
-}
-
-function toggleGlasses() {
-  const g = document.getElementById("gl1");
-  g.style.display = g.style.display === "block" ? "none" : "block";
-}
-
-function setMouth() {
-  const m = document.getElementById("mouth");
-  m.style.display = m.style.display === "block" ? "none" : "block";
-}
-
+/* ===== START ===== */
+updateTriangle();
 updateUI();
 </script>
 
